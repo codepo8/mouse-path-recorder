@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🐭 Path Recorder</title>
+  <style>
+    body {
+      max-width: 640px;
+      margin: 0 auto;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    canvas {
+      border: 2px solid #000;
+       margin: 10px 0;
+       display: block;
+       cursor: crosshair;
+    }
+    #pathdata {
+      width: 640px;
+      height: 200px;
+      display: block;
+      opacity: 0.5;
+      transition: 400ms;
+    }
+    #pathdata:focus {
+      opacity: 1;
+      transition: 400ms;
+    }
+    .buttons {
+      display: flex;
+    }
+
+    output {
+      display: inline-block;
+      align-self: flex-start;
+      flex: 5;
+      padding: 5px 10px;
+    }
+
+    .buttons a, .buttons button, .buttons label {
+      display: inline-block;
+      text-align: center;
+      margin-left: 1em;
+      align-self: flex-end;
+      font-family: inherit;
+      border: 0;
+      font-size: inherit;
+      padding: 5px 10px;
+      background:rgb(111 161 239);
+      color: #000;
+      text-decoration: none;
+    }
+    .buttons a:hover, .buttons button:hover, .buttons label:hover {
+      background: #369;
+      color: #fff;
+    }
+    [type="file"] {
+    border: 0;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute !important;
+    white-space: nowrap;
+    width: 1px;
+    }
+    [type="file"]:focus + label,
+    [type="file"] + label:hover {
+        background-color: green;
+        display: block;
+    }
+    [type="file"]:focus + label {
+    outline: 1px dotted #000;
+}
+.guru {
+      color: firebrick;
+      border: 2px solid firebrick;
+      animation: guru 1s alternate infinite;
+    }
+@keyframes guru {
+  0% { border: 2px solid firebrick }
+  49% { border: 2px solid firebrick; }
+  50% { border: 2px solid transparent; }
+  100% { border: 2px solid transparent; }
+}
+#replay.inactive, #download.inactive, .inactive {
+  display: none;
+}
+.recording {
+  position: relative;
+  padding-left: 2em;
+}
+.recording::before {
+  content: '🔴';
+  position: absolute;
+  left:0;
+  animation: recording 400ms alternate infinite;
+
+}
+@keyframes recording {
+  from { opacity: 1; }
+  to { opacity: 0.1; }
+}
+#replay.inactive, #download.inactive, .inactive {
+  display: none;
+}
+#help {
+  width: 600px;
+  margin: 10px;
+  position: absolute;
+  top: -400px;
+  transition: 400ms;
+  background:whitesmoke;
+  padding: 10px;
+  border: 1px solid #999;
+  box-shadow: 2px 2px 5px #999;
+}
+#help .buttons {
+  justify-content: flex-end;
+
+}
+h1, h2 {
+  margin: 0;
+  font-weight: normal;
+}
+#help:target {
+  top: 55px;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+}
+header a {
+  color: #000;
+  align-self: center;
+  display: inline-block;
+}
+header h1 {
+  margin: 0;
+  display: inline-block;
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🐭 Path Recorder</h1>
+    <a href="#help">Help</a>
+  </header>
+  <canvas></canvas>
+  <p class="buttons">
+    <output></output>
+    <label for="getfile">Load</label><input type="file" id="getfile">
+    <button class="inactive" id="replay">Play</button>
+    <a href="" class="inactive" id="download">Download</a>
+  </p>
+  <label for="pathdata">Points Data:</label>
+  <textarea id="pathdata"></textarea>
+  <section id="help">
+    <h2>Quick instructions</h2>
+    <p class="buttons"><a href="#top">Got it!</a></p>
+  </section>
+  <script>
+    let ci = 0;
+    let ca = [];
+    let pathno = 0;
+    let oldx = -1;
+    let oldy = -1;
+    let paint = false;
+    let replay = document.querySelector('#replay');
+    let o = document.querySelector('output');
+    let dl = document.querySelector('#download');
+    let pathdata = document.querySelector('#pathdata');
+    let pathjson = document.querySelector('#realdata');
+    let c = document.querySelector('canvas');
+    let cpos = c.getBoundingClientRect();
+    let cx = c.getContext('2d');
+    cx.globalCompositeOperation = 'copy';
+    c.width = 640;
+    c.height = 400;
+    let paths = {};
+    let path = 1;
+    const getxy = (e) => {
+       return {x:e.x - cpos.x,y:e.y - cpos.y}
+    }
+    const replayPath = i => {
+      if (i === 0) {
+        pathno = 0;
+        cx.clearRect(0,0,c.width,c.height);
+      }
+      if(Object.entries(paths)[i]) {
+        ca = Object.entries(paths)[i][1];
+        ci = 0;
+        plot();
+      }
+    }
+    const paintline = (x, y) => {
+      cx.beginPath();
+      cx.fillStyle = "rgb(0,0,0)";
+      cx.arc(x, y, 5, 0, 2 * Math.PI);
+      cx.fill();
+      cx.closePath();
+      cx.beginPath();
+      cx.strokeStyle = "rgba(0,200,0,0.6)";
+      cx.lineCap = 'round';
+      cx.lineWidth = 10;
+      if (oldx > 0 && oldy > 0) {
+        cx.moveTo(oldx - 0, oldy - 0)
+      }
+      cx.lineTo(x - 0 , y - 0);
+      cx.stroke();
+      cx.closePath();
+      oldx = x;
+      oldy = y;
+    }
+
+    const plot = () => {
+      paintline(ca[ci]*2,ca[ci+1]*2);
+      if (ca[ci+1]) {
+        ci += 2
+        setTimeout('plot()', 10);
+      } else {
+        pathno++;
+        replayPath(pathno);
+      }
+    }
+
+    const startPathRecording = e => {
+      if(!paint) {
+        paths[path] = [];
+        o.classList.add('recording');
+      } else {
+        o.classList.remove('recording');
+        writePathData(paths[path]);
+        oldx = -1;
+        oldy = -1;
+        document.querySelector('label').classList.add('visible');
+        path++;
+      }
+      paint = !paint;
+    };
+    const writePathData = _ => {
+      let out = '';
+      out = JSON.stringify(paths);
+      out = out.replace(/:/g,":\n");
+      out = out.replace(/\],/g,"],\n");
+      out = out.replace(/\{/g,"{\n");
+      out = out.replace(/\}/g,"\n}");
+      let all = 0;
+      for(p of Object.keys(paths)) {
+        all += paths[p].length;
+      }
+      o.classList.remove('guru');
+      o.innerHTML = all + ' points';
+      dl.classList.remove('inactive');
+      replay.classList.remove('inactive');
+      pathdata.innerHTML = out;
+      pathdata.scrollTop = pathdata.scrollHeight;
+      dl.setAttribute('href', 'data:application/json;charset=utf-8,' +
+       encodeURIComponent(JSON.stringify(paths)));
+      dl.setAttribute('download', 'paths.txt');
+    }
+
+    const recordPath = e => {
+      if (paint) {
+        let x = getxy(e).x;
+        let y = getxy(e).y;
+        paths[path].push(x/2|0,y/2|0);
+        paintline(x, y);
+        o.innerHTML = paths[path].length + ' new points';
+      }
+    }
+
+const filterplots = plots => {
+  let y = x.filter(function(_, i) {
+  return (i + 1) % 2;
+});
+}
+
+    const loadImage = (file, name) => {
+    let img = new Image();
+    img.src = file;
+    img.onload = function() {
+        c.style.background = `url(${img.src})`;
+        c.style.backgroundSize = 'contain';
+    };
+}
+
+const getClipboardImage = (ev) => {
+    let items = ev.clipboardData.items;
+    for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+            let blob = items[i].getAsFile();
+            loadImage(window.URL.createObjectURL(blob));
+            break;
+        }
+    }
+}
+const loadText = (file) => {
+  let reader = new FileReader();
+  reader.onload = function(event) {
+    validatetext(event.target.result);
+  }
+  reader.readAsText(file);
+}
+const validatetext = text => {
+  try {
+      JSON.parse(text)
+    }
+    catch (e) {
+      o.innerHTML = 'Error: invalid format';
+      o.classList.add('guru');
+      return false;
+    }
+    o.classList.remove('guru');
+    paths = JSON.parse(text);
+    path = Object.keys(paths).length + 1
+    writePathData();
+    replayPath(0);
+}
+const imageFromUpload = (e) => {
+  let file = e.target.files[0];
+  if (file.type.indexOf('image') !== -1) {
+    loadImage(window.URL.createObjectURL(file), file.name);
+  } else {
+    loadText(file);
+  }
+  e.preventDefault();
+}
+document.querySelector('#getfile').
+  addEventListener('change', imageFromUpload, false);
+
+const imageFromDrop = (e) => {
+    e.preventDefault();
+    let file = e.dataTransfer.files[0];
+    if (file.type === 'text/plain') {
+      loadText(file);
+    } else {
+      loadImage(window.URL.createObjectURL(file), file.name);
+    }
+}
+const updatepaths = (e) => {
+  validatetext(pathdata.value);
+}
+replay.addEventListener('click',e => {replayPath(0)});
+c.addEventListener('mousedown',startPathRecording);
+c.addEventListener('mousemove',recordPath);
+window.addEventListener('paste', getClipboardImage);
+pathdata.addEventListener('change', updatepaths);
+document.body.addEventListener('drop', imageFromDrop);
+document.body.addEventListener('dragover', (ev) => { ev.preventDefault(); });
+  </script>
+
+</body>
+</html>
