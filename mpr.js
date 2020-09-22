@@ -103,6 +103,7 @@ const mpr = (function(){
       oldx = -1;
       oldy = -1;
       path++;
+      recording.style.top = -200 + "px";
     }
     paint = !paint;
   };
@@ -136,6 +137,8 @@ const mpr = (function(){
     if (paint) {
       let x = getxy(e).x;
       let y = getxy(e).y;
+      recording.style.left = x + cpos.x + 10 + "px";
+      recording.style.top = y + cpos.y + 10 + "px";
       if (oldx > 0 && oldy > 0) {
         if (Math.abs(oldx-x) < threshold &&
             Math.abs(oldy-y) < threshold) {
