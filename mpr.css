@@ -139,7 +139,7 @@ input[type="checkbox"]:checked + label {
   width: 600px;
   margin: 10px;
   position: absolute;
-  top: -400px;
+  top: -600px;
   transition: 400ms;
   background:whitesmoke;
   padding: 10px;
@@ -151,7 +151,28 @@ input[type="checkbox"]:checked + label {
 }
 #help .buttons {
   justify-content: flex-end;
+}
+#help .buttons a {
+  color: #000;
 
 }
-
+#help p {
+  margin: 0 0 .5em 0;
+}
+#help ul {
+  margin: 0;
+  padding: 0 0 0 1.5em;
+}
+#help li {
+  list-style-type: square;
+  line-height: 1.2;
+  margin: 0 0 .5em 0;
+}
+#help h2 {
+  margin-bottom: .5em;
+}
+#help a {
+  color: #369;
+}
+  margin: 0;
 

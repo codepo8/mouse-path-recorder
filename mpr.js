@@ -124,6 +124,7 @@ const mpr = (function(){
     dl.classList.remove('inactive');
     replay.classList.remove('inactive');
     pathdata.innerHTML = out;
+    pathdata.value = out;
     pathdata.scrollTop = pathdata.scrollHeight;
     dl.setAttribute('href', 
     'data:application/json;charset=utf-8,' +
