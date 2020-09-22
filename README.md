@@ -19,9 +19,15 @@ Currently, the generated files are pretty rudimentary, and there may be some too
 
 The format is a main Object with paths. Each path has its running number as the key and an array of values. The array is a list of the recorded x and y values. 
 
-```JSON
+```
 {
-    "1": [x,y,x2,y2,x3,y3 ... ],
-    "2": [x,y,x2,y2,x3,y3 ... ]
+    "1": [x,y,x2,y2,x3,y3 … ],
+    "2": [x,y,x2,y2,x3,y3 … ]
+    …
 }
 ```
+## Why?
+
+Well, this is one of those "scratching your own itch" things. We're working on a demo for the Commodore 64, and needed a way to record some hand-writing to replay using sprites.
+
+So, yeah, geek stuff.
