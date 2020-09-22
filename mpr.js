@@ -1,6 +1,21 @@
 const mpr = (function(){
 
+  let replay = document.querySelector('#replay');
+  let o = document.querySelector('output');
+  let dl = document.querySelector('#download');
+  let pathdata = document.querySelector('#pathdata');
+  let limit = document.querySelector('#fewer');
+  let clear = document.querySelector('#clear');
+
+  let c = document.querySelector('canvas');
+  let cpos = c.getBoundingClientRect();
+  let cx = c.getContext('2d');
+  c.width = 640;
+  c.height = 400;
+
   let state = {};
+  let paths = {};
+  let path = 1;
   let ci = 0;
   let ca = [];
   let pathno = 0;
@@ -8,21 +23,25 @@ const mpr = (function(){
   let oldx = -1;
   let oldy = -1;
   let paint = false;
-  let threshold = 0;
+  let threshold = limit.checked ? 10 : 0;
 
-  let replay = document.querySelector('#replay');
-  let o = document.querySelector('output');
-  let dl = document.querySelector('#download');
-  let pathdata = document.querySelector('#pathdata');
-  let limit = document.querySelector('#fewer');
-
-  let c = document.querySelector('canvas');
-  let cpos = c.getBoundingClientRect();
-  let cx = c.getContext('2d');
-  c.width = 640;
-  c.height = 400;
-  let paths = {};
-  let path = 1;
+  const init = _ => {
+    ci = 0;
+    ca = [];
+    pathno = 0;
+  
+    oldx = -1;
+    oldy = -1;
+    paint = false;
+    threshold = limit.checked ? 10 : 0;
+    paths = {};
+    path = 1;
+    cx.clearRect(0, 0, c.width, c.height);
+    o.innerHTML = '';
+    pathdata.innerHTML = '';
+    pathdata.value = '';
+    c.style.backgroundImage = '';
+  }
 
   const getxy = (e) => {
      return {
@@ -134,8 +153,7 @@ const loadImage = (file, name) => {
   let img = new Image();
   img.src = file;
   img.onload = function() {
-      c.style.background = `url(${img.src})`;
-      c.style.backgroundSize = 'contain';
+      c.style.backgroundImage = `url(${img.src})`;
   };
 }
 
@@ -174,6 +192,9 @@ const updatepaths = (e) => {
 }
 
 replay.addEventListener('click',e => {replayPath(0)});
+clear.addEventListener('click',e => {
+  init();
+});
 limit.addEventListener('click',e => {
   threshold = e.target.checked ? 10 : 0
 });

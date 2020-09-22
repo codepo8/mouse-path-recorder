@@ -30,6 +30,11 @@ canvas {
   margin: 10px 0;
   display: block;
   cursor: crosshair;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+#clear {
+  background: transparent;
 }
 
 /* Form */
