@@ -64,8 +64,8 @@ const mpr = (function(){
   }
 
   state.plot = () => {
-    paintline(ca[ci]*2,ca[ci+1]*2);
-    if (ca[ci+1]) {
+    paintline(ca[ci] * 2, ca[ci+1] * 2);
+    if (ca[ci + 1]) {
       ci += 2
       setTimeout('mpr.state.plot()', 10);
     } else {
@@ -95,6 +95,7 @@ const mpr = (function(){
     out = out.replace(/\],/g,"],\n");
     out = out.replace(/\{/g,"{\n");
     out = out.replace(/\}/g,"\n}");
+    out = out.replace(/,/g,", ");
     let all = 0;
     for(p of Object.keys(paths)) {
       all += paths[p].length;
@@ -116,8 +117,8 @@ const mpr = (function(){
       let x = getxy(e).x;
       let y = getxy(e).y;
       if (oldx > 0 && oldy > 0) {
-        if (Math.abs(oldx-x) < threshold && Math.abs(oldy-y) < threshold) {
-          console.log('skipper');
+        if (Math.abs(oldx-x) < threshold &&
+            Math.abs(oldy-y) < threshold) {
           return false;
         }
       } 
@@ -126,14 +127,6 @@ const mpr = (function(){
       o.innerHTML = paths[path].length + ' new points';
     }
   }
-
-  // TODO ("limit points" functionality)
-  const filterplots = plots => {
-    let y = x.filter(function(_, i) {
-      return (i + 1) % 2;
-    });
-  }
-
 
 /* Getting the background image */
 
