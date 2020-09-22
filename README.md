@@ -1,6 +1,6 @@
 # Mouse Path Recorder
 
-A [small tool to record the mouse position](https://codepo8.github.io/mouse-path-recorder/#help) and get it as a JSON object.
+A [small tool to record the mouse position](https://codepo8.github.io/mouse-path-recorder/) and get it as a JSON object.
 
 * Start by clicking on the big rectangle and you'll see a small recording icon appear bottom left. Any mouse movement now adds to the dataset. Click again stops the recording.
 * Enable "Limit Points" to record fewer points and get in a smaller dataset.
