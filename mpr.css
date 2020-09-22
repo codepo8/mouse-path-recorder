@@ -72,6 +72,18 @@ output {
   background: #369;
   color: #fff;
 }
+input[type="checkbox"] {
+  display: none;
+}
+input[type="checkbox"] + label {
+  background: #ccc;
+  color: #666;
+}
+input[type="checkbox"]:checked + label {
+  background: #396;
+  color: #fff;
+}
+
 [type="file"] {
   border: 0;
   clip: rect(0, 0, 0, 0);

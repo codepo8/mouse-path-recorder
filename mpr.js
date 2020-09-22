@@ -8,11 +8,13 @@ const mpr = (function(){
   let oldx = -1;
   let oldy = -1;
   let paint = false;
+  let threshold = 0;
 
   let replay = document.querySelector('#replay');
   let o = document.querySelector('output');
   let dl = document.querySelector('#download');
   let pathdata = document.querySelector('#pathdata');
+  let limit = document.querySelector('#fewer');
 
   let c = document.querySelector('canvas');
   let cpos = c.getBoundingClientRect();
@@ -23,23 +25,25 @@ const mpr = (function(){
   let path = 1;
 
   const getxy = (e) => {
-     return {x: e.x - cpos.x, y: e.y - cpos.y}
+     return {
+       x: e.x - cpos.x + window.scrollX,
+       y: e.y - cpos.y + window.scrollY
+      }
   }
 
   const paintline = (x, y) => {
-    console.log(x,y)
     cx.beginPath();
     cx.fillStyle = "rgb(0,0,0)";
     cx.arc(x, y, 5, 0, 2 * Math.PI);
     cx.fill();
     cx.closePath();
     cx.beginPath();
-    cx.strokeStyle = "rgba(0,200,0,0.6)";
-    cx.lineCap = 'round';
-    cx.lineWidth = 10;
     if (oldx > 0 && oldy > 0) {
       cx.moveTo(oldx - 0, oldy - 0)
     }
+    cx.strokeStyle = "rgba(0,200,0,0.6)";
+    cx.lineCap = 'round';
+    cx.lineWidth = 10;
     cx.lineTo(x - 0 , y - 0);
     cx.stroke();
     cx.closePath();
@@ -111,6 +115,12 @@ const mpr = (function(){
     if (paint) {
       let x = getxy(e).x;
       let y = getxy(e).y;
+      if (oldx > 0 && oldy > 0) {
+        if (Math.abs(oldx-x) < threshold && Math.abs(oldy-y) < threshold) {
+          console.log('skipper');
+          return false;
+        }
+      } 
       paths[path].push(x/2|0,y/2|0);
       paintline(x, y);
       o.innerHTML = paths[path].length + ' new points';
@@ -171,6 +181,9 @@ const updatepaths = (e) => {
 }
 
 replay.addEventListener('click',e => {replayPath(0)});
+limit.addEventListener('click',e => {
+  threshold = e.target.checked ? 10 : 0
+});
 c.addEventListener('mousedown',startPathRecording);
 c.addEventListener('mousemove',recordPath);
 pathdata.addEventListener('change', updatepaths);
