@@ -1,0 +1,140 @@
+body {
+  max-width: 640px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+/* Globals */
+
+h1, h2 {
+  margin: 0;
+  font-weight: normal;
+}
+
+/* Header */
+header {
+  display: flex;
+  justify-content: space-between;
+}
+header a {
+  color: #000;
+  align-self: center;
+  display: inline-block;
+}
+header h1 {
+  margin: 0;
+  display: inline-block;
+}
+
+canvas {
+  border: 2px solid #000;
+  margin: 10px 0;
+  display: block;
+  cursor: crosshair;
+}
+
+/* Form */
+#replay.inactive, #download.inactive, .inactive {
+  display: none;
+}
+
+#pathdata {
+  width: 640px;
+  height: 200px;
+  display: block;
+  transition: 400ms;
+}
+
+.buttons {
+  display: flex;
+}
+
+output {
+  display: inline-block;
+  align-self: flex-start;
+  flex: 5;
+  padding: 5px 10px;
+}
+
+.buttons a, .buttons button, .buttons label {
+  display: inline-block;
+  text-align: center;
+  margin-left: 1em;
+  align-self: flex-end;
+  font-family: inherit;
+  border: 0;
+  font-size: inherit;
+  padding: 5px 10px;
+  background:rgb(111 161 239);
+  color: #000;
+  text-decoration: none;
+}
+.buttons a:hover, .buttons button:hover, .buttons label:hover {
+  background: #369;
+  color: #fff;
+}
+[type="file"] {
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute !important;
+  white-space: nowrap;
+  width: 1px;
+}
+[type="file"]:focus + label,
+[type="file"] + label:hover {
+  background-color: green;
+  display: block;
+}
+[type="file"]:focus + label {outline: 1px dotted #000;}
+
+
+/* Error and WIP */ 
+.guru {
+  color: firebrick;
+  border: 2px solid firebrick;
+  animation: guru 1s alternate infinite;
+}
+@keyframes guru {
+  0% { border: 2px solid firebrick }
+  49% { border: 2px solid firebrick; }
+  50% { border: 2px solid transparent; }
+  100% { border: 2px solid transparent; }
+}
+.recording {
+  position: relative;
+  padding-left: 2em;
+}
+.recording::before {
+  content: '🔴';
+  position: absolute;
+  left:0;
+  animation: recording 400ms alternate infinite;
+}
+@keyframes recording {
+  from { opacity: 1; }
+  to { opacity: 0.1; }
+}
+
+/* Help section */
+#help {
+  width: 600px;
+  margin: 10px;
+  position: absolute;
+  top: -400px;
+  transition: 400ms;
+  background:whitesmoke;
+  padding: 10px;
+  border: 1px solid #999;
+  box-shadow: 2px 2px 5px #999;
+}
+#help:target {
+  top: 55px;
+}
+#help .buttons {
+  justify-content: flex-end;
+
+}
+
+
