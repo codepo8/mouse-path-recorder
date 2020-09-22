@@ -6,6 +6,7 @@ const mpr = (function(){
   let pathdata = document.querySelector('#pathdata');
   let limit = document.querySelector('#fewer');
   let clear = document.querySelector('#clear');
+  let recording = document.querySelector('#recording');
 
   let c = document.querySelector('canvas');
   let cpos = c.getBoundingClientRect();
