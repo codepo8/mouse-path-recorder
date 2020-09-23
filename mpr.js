@@ -208,6 +208,10 @@ c.addEventListener('mousemove',recordPath);
 pathdata.addEventListener('change', updatepaths);
 document.querySelector('#getfile').
 addEventListener('change', imageFromUpload, false);
+if(document.location.hash !== '#help') {
+  document.location.hash = '#help';
+}
+
 
 return {state:state};
 

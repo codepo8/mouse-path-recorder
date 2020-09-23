@@ -47,7 +47,9 @@ canvas {
   display: block;
   transition: 400ms;
 }
-
+#pathdata:empty {
+  display: none;
+}
 .buttons {
   display: flex;
 }
@@ -140,9 +142,6 @@ input[type="checkbox"]:checked + label {
   left: 0;
   animation: recording 400ms alternate infinite;
 }
-
-
-
 /* Help section */
 #help {
   width: 600px;
@@ -156,7 +155,7 @@ input[type="checkbox"]:checked + label {
   box-shadow: 2px 2px 5px #999;
 }
 #help:target {
-  top: 55px;
+  top: 40px;
 }
 #help .buttons {
   justify-content: flex-end;
@@ -183,5 +182,4 @@ input[type="checkbox"]:checked + label {
 #help a {
   color: #369;
 }
-  margin: 0;
 
