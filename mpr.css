@@ -64,7 +64,7 @@ output {
 .buttons a, .buttons button, .buttons label {
   display: inline-block;
   text-align: center;
-  margin-left: 1em;
+  margin-left: .5em ;
   align-self: flex-end;
   font-family: inherit;
   border: 0;
