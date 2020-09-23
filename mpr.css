@@ -37,7 +37,7 @@ canvas {
 }
 
 /* Form */
-#replay.inactive, #download.inactive, .inactive {
+.buttons .inactive {
   display: none;
 }
 

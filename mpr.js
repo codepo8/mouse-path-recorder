@@ -6,6 +6,7 @@ const mpr = (function(){
   let pathdata = document.querySelector('#pathdata');
   let limit = document.querySelector('#fewer');
   let clear = document.querySelector('#clear');
+  let undo = document.querySelector('#undo');
   let recording = document.querySelector('#recording');
 
   let c = document.querySelector('canvas');
@@ -123,6 +124,7 @@ const mpr = (function(){
     }
     o.classList.remove('guru');
     o.innerHTML = all + ' points';
+    undo.classList.remove('inactive');
     dl.classList.remove('inactive');
     replay.classList.remove('inactive');
     pathdata.innerHTML = out;
@@ -152,7 +154,14 @@ const mpr = (function(){
     }
   }
 
-/* Getting the background image */
+  const undoLastPath = e => {
+    path--;
+    delete paths[path];
+    writePathData();
+    replayPath(0);
+  };
+
+  /* Getting the background image */
 
 const loadImage = (file, name) => {
   let img = new Image();
@@ -203,6 +212,7 @@ clear.addEventListener('click',e => {
 limit.addEventListener('click',e => {
   threshold = e.target.checked ? 10 : 0
 });
+undo.addEventListener('click',undoLastPath);
 c.addEventListener('mousedown',startPathRecording);
 c.addEventListener('mousemove',recordPath);
 pathdata.addEventListener('change', updatepaths);
